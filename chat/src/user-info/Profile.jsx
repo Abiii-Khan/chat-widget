@@ -25,6 +25,9 @@ const Profile = () => {
   let location = useLocation();
   const [show, setShow] = useState(false);
 
+  // save the loggedIn user into user
+  // set logged in user name as title
+
   useEffect(() => {
     const value = localStorage.getItem("Name");
     const loggedInUser = JSON.parse(value);
@@ -47,7 +50,7 @@ const Profile = () => {
     });
   };
 
-  // setting filter for search
+  // filter for search list
 
   const filter = (e) => {
     e.preventDefault();
@@ -84,13 +87,13 @@ const Profile = () => {
       });
   };
 
+  // show/close modal
+
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
   return (
     <>
-      {/*  Modal for logout  */}
-
       <Modal show={show} onHide={handleClose}>
         <Modal.Body>Are you sure you want to logout?</Modal.Body>
         <Modal.Footer className="border-0">
@@ -114,8 +117,6 @@ const Profile = () => {
           <ToastContainer />
         </Modal.Footer>
       </Modal>
-
-      {/*  Profile page header (dropdown, username, search-bar)  */}
 
       <div id="profile-header">
         <Form.Group className="container-fluid overflow-hidden bg-secondary">
@@ -162,9 +163,6 @@ const Profile = () => {
         </Form.Group>
         <br />
       </div>
-
-      {/*  List of users found in search  */}
-
       <div >
         <Form.Group className="container-fluid mt-10 list-group">
           {foundUsers && foundUsers.length > 0 ? (
@@ -186,9 +184,6 @@ const Profile = () => {
           ) : (
             <></>
           )}
-
-          {/*  All registered user's list   */}
-
           {loading ? (
             <>
               <div className="d-flex justify-content-center ">
@@ -200,7 +195,7 @@ const Profile = () => {
             all &&
             all.length > 0 &&
             !noRecordFound ? (
-              <div id="profile-users" style={{zIndex:"0"}}>
+              <div id="profile-users">
                 {all
                   .filter((a) => a.uid !== user.uid)
                   .map((allUsers, key) => (

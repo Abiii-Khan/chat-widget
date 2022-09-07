@@ -14,14 +14,14 @@ const Register = () => {
   const [formErrors, setFormErrors] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
 
-  // set the user values in formValues
+  // set the user filled data values in formValues
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormValues({ ...formValues, [name]: value });
   };
 
-  // set user data in backend
+  // set/post user data in backend
 
   const postUserData = async (user) => {
     const db = getDatabase();
@@ -33,13 +33,15 @@ const Register = () => {
     });
   };
 
-  //
+  // saving the user details for email/password auth
+  // after the creation of account
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmit(true);
     const auth = getAuth();
     createUserWithEmailAndPassword(auth, formValues.email, formValues.password)
+    // account created successfully, directed to login page
       .then((userCredential) => {
         setFormErrors({ registered: "Account created successfully!" });
         toast.success("Account created successfully!");
@@ -50,6 +52,7 @@ const Register = () => {
         console.log(formValues);
         setFormValues(initialValues);
       })
+      // errors defined
       .catch((error) => {
         if (error.code === "auth/internal-error") {
           alert("Please fill all the fields");
@@ -67,7 +70,7 @@ const Register = () => {
           setFormErrors({ password: "invalid password!" });
         } else if (error.code === "auth/weak-password") {
           setFormErrors({
-            password: "Password should be at least 6 characters",
+            password: "Password should atleast 6 characters",
           });
         }
       });
@@ -84,24 +87,22 @@ const Register = () => {
       <Navbar className="container-fluid nav-bar">
         <Link
           to="/"
-          className=" text-black text-decoration-none"
-          style={{ margin: "10px" }}
+          className=" text-black text-decoration-none m-2"
         >
           <img src="logo192.png" alt="logo" className="nav-logo" />
         </Link>
         <div className="nav-text">
-          <Link to="/Login" className="nav-login" style={{ margin: "20px" }}>
+          <Link to="/login" className="nav-login mx-4">
             Login
           </Link>
-          <Link to="/Register" className="nav-register">
+          <Link to="/register" className="nav-register mx-3">
             Register
           </Link>
         </div>
       </Navbar>
-      <div className="register-card">
+      <div className="register-card-main">
         <Card
-          className="container"
-          style={{ positon: "center", boxShadow: "2px 2px 15px" }}
+          className="container register-card-inner"
         >
           <Card.Body>
             <Card.Title className="text-center pb-3">Sign Up</Card.Title>
@@ -118,7 +119,7 @@ const Register = () => {
                   required
                   autoComplete="off"
                 ></Form.Control>
-                <Form.Text style={{ color: "red" }}>
+                <Form.Text className="text-danger">
                   {formErrors.username}
                 </Form.Text>
                 <br />
@@ -133,7 +134,7 @@ const Register = () => {
                   required
                   autoComplete="off"
                 ></Form.Control>
-                <Form.Text style={{ color: "red" }}>
+                <Form.Text className="text-danger">
                   {formErrors.email}
                 </Form.Text>
                 <br />
@@ -148,7 +149,7 @@ const Register = () => {
                   required
                   autoComplete="off"
                 ></Form.Control>
-                <Form.Text style={{ color: "red" }}>
+                <Form.Text className="text-danger">
                   {formErrors.password}
                 </Form.Text>
                 <br />
@@ -169,7 +170,7 @@ const Register = () => {
                 <ToastContainer />
               </Form.Group>
               <Form.Text>
-                Already have an account? <Link to="/Login">Login</Link>
+                Already have an account? <Link to="/login">Login</Link>
               </Form.Text>
             </Form>
           </Card.Body>

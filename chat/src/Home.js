@@ -9,22 +9,20 @@ const Home = () => {
       <Navbar className="container-fluid nav-bar">
         <Link
           to="/"
-          className=" text-black text-decoration-none"
-          style={{ margin: "10px" }}
+          className=" text-black text-decoration-none m-2"
         >
           <img src="logo192.png" alt="logo" className="nav-logo" />
         </Link>
         <div className="nav-text">
           <Link
-            to="/Login"
-            className="nav-login"
-            style={{ margin: "20px" }}
+            to="/login"
+            className="nav-login mx-4"
           >
             Login
           </Link>
           <Link
-            to="/Register"
-            className="nav-register"
+            to="/register"
+            className="nav-register mx-3"
           >
             Register
           </Link>

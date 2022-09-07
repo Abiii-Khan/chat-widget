@@ -17,6 +17,8 @@ const Login = (props) => {
   const [isSubmit, setIsSubmit] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  // set the user filled data values in formValues
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormValues({ ...formValues, [name]: value });
@@ -34,6 +36,7 @@ const Login = (props) => {
       formValues.password,
       formValues.username
     )
+    // user logged in successfully, directed to profile page
       .then((userCredential) => {
         const user = userCredential.user.email;
         setFormErrors({ registered: "Login successful!" });
@@ -47,6 +50,7 @@ const Login = (props) => {
           });
         });
       })
+      // errors defined
       .catch((error) => {
         if (error.code === "auth/user-not-found") {
           setFormErrors({ email: "invalid email!" });
@@ -73,28 +77,25 @@ const Login = (props) => {
       >
         <Link
           to="/"
-          className=" text-black text-decoration-none"
-          style={{ margin: "10px" }}
+          className=" text-black text-decoration-none m-2"
         >
           <img src="logo192.png" alt="logo" className="nav-logo"/>
         </Link>
         <div className="nav-text">
           <Link
-            to="/Login"
-            className="nav-login"
-            style={{ margin: "20px" }}
+            to="/login"
+            className="nav-login mx-4"
           >
             Login
           </Link>
-          <Link to="/Register" className="nav-register">
+          <Link to="/register" className="nav-register mx-3">
             Register
           </Link>
         </div>
       </Navbar>
-      <div className="login-card">
+      <div className="login-card-main">
         <Card
-          className="container"
-          style={{ positon: "center", boxShadow: "2px 2px 15px" }}
+          className="container login-card-inner"
         >
           <Card.Body>
             <Card.Title className="text-center pb-3">Login</Card.Title>
@@ -111,7 +112,7 @@ const Login = (props) => {
                   required
                   autoComplete="off"
                 ></Form.Control>
-                <Form.Text style={{ color: "red" }}>
+                <Form.Text className="text-danger">
                   {formErrors.email}
                 </Form.Text>
                 <br />
@@ -126,7 +127,7 @@ const Login = (props) => {
                   required
                   autoComplete="off"
                 ></Form.Control>
-                <Form.Text style={{ color: "red" }}>
+                <Form.Text className="text-danger">
                   {formErrors.password}
                 </Form.Text>
                 <br />
@@ -148,7 +149,7 @@ const Login = (props) => {
                 <ToastContainer />
               </Form.Group>
               <Form.Text>
-                Don&apos;t have an account? <Link to="/Register">Register</Link>
+                Don&apos;t have an account? <Link to="/register">Register</Link>
               </Form.Text>
             </Form>
           </Card.Body>

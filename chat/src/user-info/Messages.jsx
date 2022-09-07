@@ -27,7 +27,7 @@ const Messages = () => {
   const userDetails = location.state;
   const [content, setContent] = useState("");
   const [user, setUser] = useState();
-  const [all, setAll] = useState([]);
+  const [allMessages, setAllMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [show, setShow] = useState(false);
 
@@ -46,10 +46,10 @@ const Messages = () => {
     }
   }, []);
 
-  //  set messages content in all
+  //  set messages content in allMessages
 
   const data = (profileUser) => {
-    setAll("");
+    setAllMessages("");
     var messageText = [];
     onValue(
       ref(db, "/Users/Chat/" + profileUser.uid + userDetails.uid),
@@ -58,10 +58,10 @@ const Messages = () => {
         querySnapShot.forEach((snap) => {
           messageText.push(snap.val());
         });
-        setAll(messageText);
+        setAllMessages(messageText);
       }
     );
-    setAll(messageText);
+    setAllMessages(messageText);
   };
 
   // set messsages for sender and receiver in database using key
@@ -118,6 +118,7 @@ const Messages = () => {
 
   // delete function
 
+  // for sender
   const deleteForMe = (messageId) => {
     setShow(false);
     const keyref = ref(
@@ -134,7 +135,7 @@ const Messages = () => {
       remove(keyrefs);
     }
   };
-
+  // for sender and receiver
   const deleteForEveryone = (messageId) => {
     setShow(false);
     const keyref = ref(
@@ -223,7 +224,7 @@ const Messages = () => {
             </Modal.Footer>
           </Modal>
           <div>
-            {all.map((senderMessages, index) => {
+            {allMessages.map((senderMessages, index) => {
               if (senderMessages.sender === user.uid + "/" + user.username) {
                 return (
                   <>
@@ -275,8 +276,7 @@ const Messages = () => {
                   />
                   <Button
                     type="submit"
-                    id="message-btn"
-                    style={{ margin: "5px" }}
+                    className="message-btn m-1"
                   >
                     <SendFill />
                   </Button>

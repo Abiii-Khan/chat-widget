@@ -11,7 +11,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 Clone the project using command.
 ​
 ```bash
-  git clone (https://github.com/Abiii-Khan/react).
+  git clone (https://github.com/Abiii-Khan/chat-widget).
 ```
 ​
 Go to the project directory.
@@ -30,13 +30,15 @@ Install dependencies using command.
 ​
 For the backend use Firebase.
 
-get started with (https://firebase.google.com/). 
-​
-create a project and add firebase to your web app. 
+```bash
+  get started with (https://firebase.google.com/).
+```
+
+create a project and add firebase to your app. 
 
 ​```bash
- npm install firebase
-```
+  npm install firebase
+``
 ​
 ## Environment Variables
 ​

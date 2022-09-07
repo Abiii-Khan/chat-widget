@@ -25,10 +25,10 @@ const App = () => {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="Login" element={<Login />} />
-          <Route path="Register" element={<Register />} />
+          <Route path="login" element={<Login />} />
+          <Route path="register" element={<Register />} />
           <Route
-            path="Profile"
+            path="profile"
             element={
               user ? (
                 <Profile />
@@ -50,9 +50,9 @@ const App = () => {
           <Route
             path="*"
             element={
-              <main style={{ padding: "1rem" }}>
+              <main className="p-3 text-center">
                 <h1>
-                  <strong style={{ color: "red" }}>404 </strong>page not found!
+                  <strong className="text-danger">404 </strong>page not found!
                 </h1>
               </main>
             }

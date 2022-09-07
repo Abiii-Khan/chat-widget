@@ -67,7 +67,7 @@ body::-webkit-scrollbar {
   background-color: white;
   color: black;
 }
-.login-card
+.login-card-main
 {
   margin: auto;
   margin-top: 40px;
@@ -75,13 +75,23 @@ body::-webkit-scrollbar {
   font-size: 20px;
   width: fit-content;
 }
-.register-card
+.login-card-inner
+{
+  position: center;
+  box-shadow: 2px 2px 15px;
+}
+.register-card-main
 {
   margin: auto;
   margin-top: 20px;
   font-family: serif;
   font-size: 17px;
   width: fit-content;
+}
+.register-card-inner
+{
+  position: center;
+  box-shadow: 2px 2px 15px;
 }
 .input
 {
