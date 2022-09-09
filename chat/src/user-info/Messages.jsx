@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect, useRef } from "react";
-import { useLocation, useHref } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { SendFill, ArrowLeftShort } from "react-bootstrap-icons";
 import { Button, Form, Modal } from "react-bootstrap";
 import {
@@ -24,18 +24,19 @@ import {
 
 const Messages = () => {
   const location = useLocation();
-  const userDetails = location.state;
+  const chatUser = location.state;
   const [content, setContent] = useState("");
-  const [user, setUser] = useState();
+  const [profileUser, setUser] = useState();
   const [allMessages, setAllMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [show, setShow] = useState(false);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setContent(e.target.value);
   };
 
-  //  set logged in user name as title
+  //  set logged in profileUser name as title
 
   useEffect(() => {
     const value = localStorage.getItem("Name");
@@ -52,7 +53,7 @@ const Messages = () => {
     setAllMessages("");
     var messageText = [];
     onValue(
-      ref(db, "/Users/Chat/" + profileUser.uid + userDetails.uid),
+      ref(db, "/users/chat/" + profileUser.uid + chatUser.uid),
       (querySnapShot) => {
         messageText = [];
         querySnapShot.forEach((snap) => {
@@ -80,39 +81,39 @@ const Messages = () => {
     e.preventDefault();
     const db = getDatabase();
     const firstuserkey = push(
-      ref(db, "Users/Chat/" + user.uid + userDetails.uid)
+      ref(db, "users/chat/" + profileUser.uid + chatUser.uid)
     ).key;
     const sender = ref(
       db,
-      "Users/Chat/" + user.uid + userDetails.uid + "/" + firstuserkey
+      "users/chat/" + profileUser.uid + chatUser.uid + "/" + firstuserkey
     );
 
     // sender
 
     set(sender, {
       message: content,
-      sender: user.uid + "/" + user.username,
-      receiver: userDetails.uid + "/" + userDetails.username,
+      sender: profileUser.uid + "/" + profileUser.username,
+      receiver: chatUser.uid + "/" + chatUser.username,
       messageId: firstuserkey,
       time: Time,
     })
       .then((e) => {
         const receiver = ref(
           db,
-          "Users/Chat/" + userDetails.uid + user.uid + "/" + firstuserkey
+          "users/chat/" + chatUser.uid + profileUser.uid + "/" + firstuserkey
         );
 
         // receiver
 
         set(receiver, {
           message: content,
-          sender: user.uid + "/" + user.username,
-          receiver: userDetails.uid + "/" + userDetails.username,
+          sender: profileUser.uid + "/" + profileUser.username,
+          receiver: chatUser.uid + "/" + chatUser.username,
           messageId: firstuserkey,
           time: Time,
         });
       })
-      .then(() => data(user));
+      .then(() => data(profileUser));
     setContent("");
   };
 
@@ -121,33 +122,33 @@ const Messages = () => {
   // for sender
   const deleteForMe = (messageId) => {
     setShow(false);
-    const keyref = ref(
+    const senderKeyRef = ref(
       db,
-      "Users/Chat/" + user.uid + userDetails.uid + "/" + messageId
+      "users/chat/" + profileUser.uid + chatUser.uid + "/" + messageId
     );
-    const keyrefs = ref(
+    const receiverKeyRef = ref(
       db,
-      "Users/Chat/" + userDetails.uid + user.uid + "/" + messageId
+      "users/chat/" + chatUser.uid + profileUser.uid + "/" + messageId
     );
-    if (keyref) {
-      remove(keyref);
-    } else if (keyrefs) {
-      remove(keyrefs);
+    if (senderKeyRef) {
+      remove(senderKeyRef);
+    } else if (receiverKeyRef) {
+      remove(receiverKeyRef);
     }
   };
   // for sender and receiver
   const deleteForEveryone = (messageId) => {
     setShow(false);
-    const keyref = ref(
+    const senderKeyRef = ref(
       db,
-      "Users/Chat/" + user.uid + userDetails.uid + "/" + messageId
+      "users/chat/" + profileUser.uid + chatUser.uid + "/" + messageId
     );
-    const keyrefs = ref(
+    const receiverKeyRef = ref(
       db,
-      "Users/Chat/" + userDetails.uid + user.uid + "/" + messageId
+      "users/chat/" + chatUser.uid + profileUser.uid + "/" + messageId
     );
-    remove(keyref).then(() => {
-      remove(keyrefs).then(() => data(user));
+    remove(senderKeyRef).then(() => {
+      remove(receiverKeyRef).then(() => data(profileUser));
     });
   };
 
@@ -175,7 +176,7 @@ const Messages = () => {
   // navigate back to profile page
 
   const backToProfile = () => {
-    window.location.href = "/profile";
+    navigate("/profile");
   };
 
   if (loading) {
@@ -192,7 +193,7 @@ const Messages = () => {
         <ChakraProvider>
           <div id="msg-head">
             <header>
-              <h2 id="msg-h2">{userDetails.username}</h2>
+              <h2 id="msg-h2">{chatUser.username}</h2>
             </header>
             <ArrowLeftShort className="back-arrow" onClick={backToProfile} />
           </div>
@@ -225,7 +226,7 @@ const Messages = () => {
           </Modal>
           <div>
             {allMessages.map((senderMessages, index) => {
-              if (senderMessages.sender === user.uid + "/" + user.username) {
+              if (senderMessages.sender === profileUser.uid + "/" + profileUser.username) {
                 return (
                   <>
                     <Flex

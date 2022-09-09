@@ -25,10 +25,10 @@ const App = () => {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="login" element={<Login />} />
-          <Route path="register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
           <Route
-            path="profile"
+            path="/profile"
             element={
               user ? (
                 <Profile />
@@ -38,7 +38,7 @@ const App = () => {
             }
           />
           <Route
-            path="messages/:id"
+            path="/messages/:id"
             element={
               user ? (
                 <Messages />

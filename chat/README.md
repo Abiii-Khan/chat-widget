@@ -36,9 +36,9 @@ For the backend use Firebase.
 
 create a project and add firebase to your app. 
 
-​```bash
-  npm install firebase
-``
+```bash
+npm install firebase
+```
 ​
 ## Environment Variables
 ​

@@ -1,18 +1,20 @@
 /* eslint-disable no-unused-vars */
 // eslint-disable-next-line no-unused-vars
-import { Link } from "react-router-dom";
-import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { Button, Form, Card, Navbar } from "react-bootstrap";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { getDatabase, ref, set } from "firebase/database";
+import FormInput from "./FormInput.jsx";
 
 const Register = () => {
   const initialValues = { username: "", email: "", password: "" };
   const [formValues, setFormValues] = useState(initialValues);
   const [formErrors, setFormErrors] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
+  const navigate = useNavigate();
 
   // set the user filled data values in formValues
 
@@ -25,7 +27,7 @@ const Register = () => {
 
   const postUserData = async (user) => {
     const db = getDatabase();
-    set(ref(db, "Users/Signup/" + user), {
+    set(ref(db, "users/signup/" + user), {
       username: formValues.username,
       email: formValues.email,
       password: formValues.password,
@@ -43,13 +45,10 @@ const Register = () => {
     createUserWithEmailAndPassword(auth, formValues.email, formValues.password)
     // account created successfully, directed to login page
       .then((userCredential) => {
-        setFormErrors({ registered: "Account created successfully!" });
         toast.success("Account created successfully!");
         if (userCredential?.user?.uid) {
           postUserData(userCredential.user.uid);
-          window.location.href = "/login";
         }
-        console.log(formValues);
         setFormValues(initialValues);
       })
       // errors defined
@@ -70,17 +69,11 @@ const Register = () => {
           setFormErrors({ password: "invalid password!" });
         } else if (error.code === "auth/weak-password") {
           setFormErrors({
-            password: "Password should atleast 6 characters",
+            password: "Password should atleast 6 digits",
           });
         }
       });
   };
-
-  useEffect(() => {
-    if (Object.keys(formErrors).length === 0 && isSubmit) {
-      //
-    }
-  });
 
   return (
     <>
@@ -108,50 +101,59 @@ const Register = () => {
             <Card.Title className="text-center pb-3">Sign Up</Card.Title>
             <Form className="container" onSubmit={handleSubmit}>
               <Form.Group className="m-1 p-1">
-                <Form.Label>username :</Form.Label>
-                <Form.Control
-                  className="input"
-                  type="username"
-                  name="username"
-                  value={formValues.username}
-                  onChange={handleChange}
-                  placeholder="username"
-                  required
-                  autoComplete="off"
-                ></Form.Control>
-                <Form.Text className="text-danger">
-                  {formErrors.username}
-                </Form.Text>
+                <FormInput
+                  label={"Username :"}
+                  inputProps={{
+                    className:"input",
+                    type:"username",
+                    name:"username",
+                    value:formValues.username,
+                    onChange:handleChange,
+                    placeholder:"username",
+                    required: true,
+                    autoComplete:"off"
+                  }}
+                  error={formErrors.username}
+                  errorText={{
+                    className: "text-danger"
+                  }}
+                />
                 <br />
-                <Form.Label>Email :</Form.Label>
-                <Form.Control
-                  className="input"
-                  type="email"
-                  name="email"
-                  value={formValues.email}
-                  onChange={handleChange}
-                  placeholder="example@chat.com"
-                  required
-                  autoComplete="off"
-                ></Form.Control>
-                <Form.Text className="text-danger">
-                  {formErrors.email}
-                </Form.Text>
+                <FormInput
+                  label={"Email :"}
+                  inputProps={{
+                    className:"input",
+                    type:"email",
+                    name:"email",
+                    value:formValues.email,
+                    onChange:handleChange,
+                    placeholder:"email",
+                    required: true,
+                    autoComplete:"off"
+                  }}
+                  error={formErrors.email}
+                  errorText={{
+                    className: "text-danger"
+                  }}
+                />
                 <br />
-                <Form.Label>Password :</Form.Label>
-                <Form.Control
-                  className="input"
-                  type="password"
-                  name="password"
-                  value={formValues.password}
-                  onChange={handleChange}
-                  placeholder="******"
-                  required
-                  autoComplete="off"
-                ></Form.Control>
-                <Form.Text className="text-danger">
-                  {formErrors.password}
-                </Form.Text>
+                <FormInput
+                  label={"Password :"}
+                  inputProps={{
+                    className:"input",
+                    type:"password",
+                    name:"password",
+                    value:formValues.password,
+                    onChange:handleChange,
+                    placeholder:"password",
+                    required: true,
+                    autoComplete:"off"
+                  }}
+                  error={formErrors.password}
+                  errorText={{
+                    className: "text-danger"
+                  }}
+                />
                 <br />
                 <Button type="submit" variant="primary">
                   Register

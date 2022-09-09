@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate} from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { getAuth, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { Button, Form, Card, Navbar } from "react-bootstrap";
@@ -8,14 +8,15 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { db } from "../firebase.js";
 import { ref, onValue } from "firebase/database";
+import FormInput from "./FormInput.jsx";
 
 const Login = (props) => {
-  const initialValues = { username: "", email: "", password: "" };
+  const initialValues = {email: "", password: "" };
   const [formValues, setFormValues] = useState(initialValues);
   const [formErrors, setFormErrors] = useState({});
   const [user, setUser] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   // set the user filled data values in formValues
 
@@ -39,13 +40,13 @@ const Login = (props) => {
     // user logged in successfully, directed to profile page
       .then((userCredential) => {
         const user = userCredential.user.email;
-        setFormErrors({ registered: "Login successful!" });
         toast.success("logging in");
-        onValue(ref(db, "/Users/Signup/"), (querySnapShot) => {
+        onValue(ref(db, "/users/signup/"), (querySnapShot) => {
           querySnapShot.forEach((snap) => {
             if (snap.val().email === user) {
+              console.log("ata ha");
               localStorage.setItem("Name", JSON.stringify(snap.val()));
-              window.location.href = "/profile";
+              navigate("/profile");
             }
           });
         });
@@ -64,11 +65,6 @@ const Login = (props) => {
       });
   };
   
-  useEffect(() => {
-    if (formErrors.length === 0 && isSubmit) {
-      //
-    }
-  }, [formErrors]);
 
   return (
     <>
@@ -101,35 +97,41 @@ const Login = (props) => {
             <Card.Title className="text-center pb-3">Login</Card.Title>
             <Form className="container" onSubmit={handleSubmit}>
               <Form.Group className="m-1 p-1">
-                <Form.Label>Email :</Form.Label>
-                <Form.Control
-                  className="input"
-                  type="email"
-                  name="email"
-                  value={formValues.email}
-                  onChange={handleChange}
-                  placeholder="example@email.com"
-                  required
-                  autoComplete="off"
-                ></Form.Control>
-                <Form.Text className="text-danger">
-                  {formErrors.email}
-                </Form.Text>
+                <FormInput
+                  label={"Email :"}
+                  inputProps={{
+                    className:"input",
+                    type:"email",
+                    name:"email",
+                    value:formValues.email,
+                    onChange:handleChange,
+                    placeholder:"example@email.com",
+                    required: true,
+                    autoComplete:"off"
+                  }}
+                  error={formErrors.email}
+                  errorText={{
+                    className: "text-danger"
+                  }}
+                />
                 <br />
-                <Form.Label>Password :</Form.Label>
-                <Form.Control
-                  className="input"
-                  type="password"
-                  name="password"
-                  value={formValues.password}
-                  onChange={handleChange}
-                  placeholder="******"
-                  required
-                  autoComplete="off"
-                ></Form.Control>
-                <Form.Text className="text-danger">
-                  {formErrors.password}
-                </Form.Text>
+                <FormInput
+                  label={"Password :"}
+                  inputProps={{
+                    className:"input",
+                    type:"password",
+                    name:"password",
+                    value:formValues.password,
+                    onChange:handleChange,
+                    placeholder:"******",
+                    required: true,
+                    autoComplete:"off"
+                  }}
+                  error={formErrors.password}
+                  errorText={{
+                    className: "text-danger"
+                  }}
+                />
                 <br />
                 <Button type="submit" variant="primary">
                   Start Chat

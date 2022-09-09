@@ -14,7 +14,6 @@ import { db } from "../firebase.js";
 import { getAuth, signOut } from "firebase/auth";
 import { ref, onValue } from "firebase/database";
 import "../index.css";
-import { useLocation } from "react-router-dom";
 
 const Profile = () => {
   const [user, setUser] = useState("");
@@ -22,7 +21,7 @@ const Profile = () => {
   const [foundUsers, setFoundUsers] = useState(all);
   const [noRecordFound, setNoRecordFound] = useState(false);
   const [loading, setLoading] = useState(true);
-  let location = useLocation();
+  const navigate = useNavigate();
   const [show, setShow] = useState(false);
 
   // save the loggedIn user into user
@@ -41,7 +40,7 @@ const Profile = () => {
 
   const Data = () => {
     var registeredUsers = [];
-    return onValue(ref(db, "/Users/Signup/"), (querySnapShot) => {
+    return onValue(ref(db, "/users/signup/"), (querySnapShot) => {
       querySnapShot.forEach((snap) => {
         registeredUsers.push(snap.val());
       });
@@ -80,7 +79,7 @@ const Profile = () => {
       .then(() => {
         const valueClear = localStorage.getItem("Name");
         localStorage.clear(valueClear);
-        window.location.href = "/login"; 
+        navigate("/login");
       })
       .catch((error) => {
         alert(error);
