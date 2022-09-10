@@ -7,9 +7,7 @@ import { Button, Form, Modal } from "react-bootstrap";
 import {
   Text,
   Flex,
-  Input,
   ChakraProvider,
-  FormControl,
 } from "@chakra-ui/react";
 import { db } from "../firebase.js";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -28,9 +26,9 @@ const Messages = () => {
   const [content, setContent] = useState("");
   const [profileUser, setUser] = useState();
   const [allMessages, setAllMessages] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [show, setShow] = useState(false);
   const navigate = useNavigate();
+  const [modalValues, setModalValues] = useState();
 
   const handleChange = (e) => {
     setContent(e.target.value);
@@ -119,7 +117,7 @@ const Messages = () => {
 
   // delete function
 
-  // for sender
+  // to delete a message just from one side
   const deleteForMe = (messageId) => {
     setShow(false);
     const senderKeyRef = ref(
@@ -136,7 +134,7 @@ const Messages = () => {
       remove(receiverKeyRef);
     }
   };
-  // for sender and receiver
+  // to delete a message from both sides
   const deleteForEveryone = (messageId) => {
     setShow(false);
     const senderKeyRef = ref(
@@ -154,7 +152,6 @@ const Messages = () => {
 
   // setting key for modal
 
-  const [modalValues, setModalValues] = useState();
   const modalFun = (senderMessages) => {
     handleShow();
     setModalValues(senderMessages.messageId);
@@ -179,116 +176,106 @@ const Messages = () => {
     navigate("/profile");
   };
 
-  if (loading) {
-    return (
-      <>
-        <div className="d-flex justify-content-center m-9">
-          <div className="spinner-border"></div>
+  return (
+    <>
+      <ChakraProvider>
+        <div id="msg-head">
+          <header>
+            <h2 id="msg-h2">{chatUser.username}</h2>
+          </header>
+          <ArrowLeftShort className="back-arrow" onClick={backToProfile} />
         </div>
-      </>
-    );
-  } else {
-    return (
-      <React.Fragment>
-        <ChakraProvider>
-          <div id="msg-head">
-            <header>
-              <h2 id="msg-h2">{chatUser.username}</h2>
-            </header>
-            <ArrowLeftShort className="back-arrow" onClick={backToProfile} />
-          </div>
-          <Modal
-            className="modal"
-            value={modalValues}
-            show={show}
-            onHide={handleClose}
-          >
-            <Modal.Body>
+        <Modal
+          className="modal"
+          value={modalValues}
+          show={show}
+          onHide={handleClose}
+        >
+          <Modal.Body>
               Are you sure you want to delete this message?
-            </Modal.Body>
-            <Modal.Footer className="border-0">
-              <Button variant="secondary" onClick={handleClose}>
+          </Modal.Body>
+          <Modal.Footer className="border-0">
+            <Button variant="secondary" onClick={handleClose}>
                 Cancel
-              </Button>
-              <Button
-                variant="primary"
-                onClick={() => deleteForMe(modalValues)}
-              >
+            </Button>
+            <Button
+              variant="primary"
+              onClick={() => deleteForMe(modalValues)}
+            >
                 Delete for me
-              </Button>
-              <Button
-                variant="primary"
-                onClick={() => deleteForEveryone(modalValues)}
-              >
+            </Button>
+            <Button
+              variant="primary"
+              onClick={() => deleteForEveryone(modalValues)}
+            >
                 Delete for everyone
-              </Button>
-            </Modal.Footer>
-          </Modal>
-          <div>
-            {allMessages.map((senderMessages, index) => {
-              if (senderMessages.sender === profileUser.uid + "/" + profileUser.username) {
-                return (
-                  <>
-                    <Flex
-                      key={senderMessages.messageId}
-                      w="100%"
-                      justify="flex-end"
-                      onClick={() => modalFun(senderMessages)}
-                    >
-                      <Flex id="textStyle" bg="grey">
-                        <Text>{senderMessages.message}</Text>
-                        <span className="msg-time">
-                          <Text>{senderMessages.time}</Text>
-                        </span>
-                      </Flex>
-                    </Flex>
-                  </>
-                );
-              } else {
-                return (
+            </Button>
+          </Modal.Footer>
+        </Modal>
+        <div>
+          {allMessages.map((senderMessages, index) => {
+            if (senderMessages.sender === profileUser.uid + "/" + profileUser.username) {
+              return (
+                <>
                   <Flex
+                    key={senderMessages.messageId}
                     w="100%"
+                    justify="flex-end"
                     onClick={() => modalFun(senderMessages)}
-                    key={index}
                   >
-                    <Flex id="textStyle" bg="rgb(20, 131, 243)">
+                    <Flex id="textStyle" bg="grey">
                       <Text>{senderMessages.message}</Text>
                       <span className="msg-time">
                         <Text>{senderMessages.time}</Text>
                       </span>
                     </Flex>
                   </Flex>
-                );
-              }
-            })}
-            <AlwaysScrollToBottom />
-          </div>
-          <div className="msg-footer container">
-            <Flex mt="5">
-              <Form onSubmit={handleSubmit}>
-                <Form.Group id="msg-form" className="container">
-                  <Form.Control
-                    value={content}
-                    type="textarea"
-                    placeholder="Type a message"
-                    width="auto"
-                    onChange={(e) => handleChange(e)}
-                    autoComplete="off"
-                  />
-                  <Button
-                    type="submit"
-                    className="message-btn m-1"
-                  >
-                    <SendFill />
-                  </Button>
-                </Form.Group>
-              </Form>
-            </Flex>
-          </div>
-        </ChakraProvider>
-      </React.Fragment>
-    );
-  }
+                </>
+              );
+            } else {
+              return (
+                <Flex
+                  w="100%"
+                  onClick={() => modalFun(senderMessages)}
+                  key={index}
+                >
+                  <Flex id="textStyle" bg="rgb(20, 131, 243)">
+                    <Text>{senderMessages.message}</Text>
+                    <span className="msg-time">
+                      <Text>{senderMessages.time}</Text>
+                    </span>
+                  </Flex>
+                </Flex>
+              );
+            }
+          })}
+          <AlwaysScrollToBottom />
+        </div>
+        <div className="msg-footer container">
+          <Flex mt="5">
+            <Form onSubmit={handleSubmit}>
+              <Form.Group id="msg-form" className="container">
+                <Form.Control
+                  value={content}
+                  type="textarea"
+                  placeholder="Type a message"
+                  width="auto"
+                  onChange={(e) => handleChange(e)}
+                  autoComplete="off"
+                />
+                <Button
+                  type="submit"
+                  className="message-btn m-1"
+                >
+                  <SendFill />
+                </Button>
+              </Form.Group>
+            </Form>
+          </Flex>
+        </div>
+      </ChakraProvider>
+    </>
+  );
 };
 
 export default Messages;

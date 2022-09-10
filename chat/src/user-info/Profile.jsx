@@ -17,8 +17,8 @@ import "../index.css";
 
 const Profile = () => {
   const [user, setUser] = useState("");
-  const [all, setAll] = useState([]);
-  const [foundUsers, setFoundUsers] = useState(all);
+  const [allRegisteredUsers, setAll] = useState([]);
+  const [foundUsers, setFoundUsers] = useState(allRegisteredUsers);
   const [noRecordFound, setNoRecordFound] = useState(false);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -55,7 +55,7 @@ const Profile = () => {
     e.preventDefault();
     const keyword = e.target.value;
     if (keyword !== "") {
-      const results = all.filter((user) => {
+      const results = allRegisteredUsers.filter((user) => {
         return user.username.toLowerCase().startsWith(keyword.toLowerCase());
       });
       if (results.length === 0) {
@@ -69,7 +69,6 @@ const Profile = () => {
       setNoRecordFound(false);
     }
   };
-
   //   signout and clear localstorage 
 
   const logout = () => {
@@ -191,11 +190,11 @@ const Profile = () => {
             </>
           ) : foundUsers &&
             foundUsers.length === 0 &&
-            all &&
-            all.length > 0 &&
+            allRegisteredUsers &&
+            allRegisteredUsers.length > 0 &&
             !noRecordFound ? (
               <div id="profile-users">
-                {all
+                {allRegisteredUsers
                   .filter((a) => a.uid !== user.uid)
                   .map((allUsers, key) => (
                     <Link

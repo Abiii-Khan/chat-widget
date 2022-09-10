@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 import { Link, useNavigate} from "react-router-dom";
-import React, { useState, useEffect } from "react";
+import React, { useState} from "react";
 import { getAuth, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { Button, Form, Card, Navbar } from "react-bootstrap";
 import { ToastContainer, toast } from "react-toastify";
@@ -44,7 +44,6 @@ const Login = (props) => {
         onValue(ref(db, "/users/signup/"), (querySnapShot) => {
           querySnapShot.forEach((snap) => {
             if (snap.val().email === user) {
-              console.log("ata ha");
               localStorage.setItem("Name", JSON.stringify(snap.val()));
               navigate("/profile");
             }
